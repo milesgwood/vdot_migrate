@@ -80,7 +80,7 @@ class CustomModController extends ControllerBase{
                 'federal_aviation_administration_faa_'=> '',
                 'federal_emergency_management_agency_fema_'=> '',
                 'federal_highway_administration_fhwa_'=> '1087',
-                'first_name'=> 'Stephen'
+                'first_name'=> 'Stephen',
                 'forest_service'=> '',
                 'general_administration_and_miscellaneous_expenditures'=> '',
                 'general_administration_and_miscellaneous_expenditures_total'=> '',
@@ -123,7 +123,7 @@ class CustomModController extends ControllerBase{
                 'traffic_control_operations_total'=> '50000000',
                 'traffic_fines_exclude_parking_fines_'=> '54321',
                 'what_amount_of_funds_were_transferred_by_your_locality_to_either'=> '',
-                'what_is_the_total_value_of_bonds_outstanding_in_your_locality_as'=> '100000000'
+                'what_is_the_total_value_of_bonds_outstanding_in_your_locality_as'=> '100000000',
             ],
         ];
         
