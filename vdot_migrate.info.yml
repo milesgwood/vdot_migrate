@@ -1,0 +1,5 @@
+name: VDOT Data Migrate
+type: module
+description: 'Migrate the VDOT data from CSV files into the webform for VDOT data'
+package: Custom
+core: 8.x
