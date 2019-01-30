@@ -16,7 +16,7 @@ class CustomModController extends ControllerBase
         $handle = fopen($filename, 'r');
         //kint($handle);
         $arrSubmission = array();
-        $final_response = '<h2>Webform Submissions</h2><table><th>Locality</th><th>Status</th>';
+        $final_response = '<html><header></header><body><h2>Webform Submissions</h2><table><th>Submission</th><th>Locality</th><th>Status</th>';
         ini_set('auto_detect_line_endings', true);
         while (false !== ($rowData = fgetcsv($handle))) {
             //kint($rowData);
@@ -25,7 +25,10 @@ class CustomModController extends ControllerBase
             //kint($response);
         }
         fclose($handle);
-        $final_response = $final_response.'</table>';
+        $final_response = $final_response.'</table></body></html>';
+
+        $output_html = $filePath.'/output.html';
+        file_put_contents($output_html, $final_response);
 
         return Response::create($final_response, 200);
     }
@@ -167,14 +170,14 @@ class CustomModController extends ControllerBase
                     //kint($webform_submission);
                     if (is_numeric($webform_submission->id()) && $webform_submission->id() > 0) {
                         $responseWF = true;
-                        $response = '<tr><td>'.$wedformID[1].'</td><td>success</td></tr>';
+                        $response = '<tr><td>'.strval($webform_submission->id()).'</td><td>'.$wedformID[1].'</td><td>success</td></tr>';
                     }
                 }
             }
         }
 
         if (false === $responseWF) {
-            $response = '<tr style="color:red;"><td>'.$wedformID[1].'</td><td>FAILED</td></tr>';
+            $response = '<tr><td></td><td style="color:red;">'.$wedformID[1].'</td><td style="color:red;">FAILED</td></tr>';
         }
         unset($wedformID);
 
