@@ -16,17 +16,18 @@ class CustomModController extends ControllerBase
         $handle = fopen($filename, 'r');
         //kint($handle);
         $arrSubmission = array();
+        $final_response = '<h2>Webform Submissions</h2><table><th>Locality</th><th>Status</th>';
         ini_set('auto_detect_line_endings', true);
         while (false !== ($rowData = fgetcsv($handle))) {
             //kint($rowData);
             $response = $this->add_rsvp_submission($rowData);
+            $final_response = $final_response.$response;
             //kint($response);
         }
         fclose($handle);
+        $final_response = $final_response.'</table>';
 
-        $response = $response;
-
-        return new Response(render($response));
+        return Response::create($final_response, 200);
     }
 
     public function add_rsvp_submission($rowData = array())
@@ -36,7 +37,6 @@ class CustomModController extends ControllerBase
         }
         //add to webform and send edm
         $responseWF = false;
-        $response = array();
         $values = null;
         //Get the User ID
         $name = $wedformID[1];
@@ -50,8 +50,16 @@ class CustomModController extends ControllerBase
             echo 'No UID for '.$name;
         }
 
+        $other_agencies = array();
+        $other_agencies_data = array(
+            'agency' => $wedformID[38],
+            'amount' => $wedformID[39],
+        );
+        $other_agencies[] = $other_agencies_data;
+
         $law_enforcement_percentage = $this->convert_num_to_percent_range_law_enforcement($wedformID[64]); //64 is empty in 2004 - 24 is supposed to be the percentage
         $percent_personal_prop_tax_from_vehicles = $this->convert_num_to_percent_range($wedformID[9]);
+        $email = preg_replace('/\s+/', '', $wedformID[3]);
 
         $values = [
             'webform_id' => '2018_vdot_survey',
@@ -64,7 +72,7 @@ class CustomModController extends ControllerBase
             'uri' => '/unfinished-forms',
             'remote_addr' => '137.54.152.242',
             'data' => [
-                'email' => $wedformID[3],
+                'email' => $email,
                 'year' => $wedformID[4],
                 'actual_spending_on_eligible_facilities' => $wedformID[5],
                 'of_the_total_outstanding_what_amount_was_associated_with_financi' => $wedformID[7],
@@ -101,7 +109,7 @@ class CustomModController extends ControllerBase
                 'm_i_' => '',
                 'other' => $wedformID[36],
                 'other_total' => $wedformID[37],
-                'other_agencies_please_specify_' => [['agency'] => $wedformID[38], ['amount'] => $wedformID[39]],
+                'other_agencies_please_specify_' => $other_agencies,
                 'other_emergency_services' => $wedformID[40],
                 'other_emergency_services_total' => $wedformID[41],
                 'other_traffic_services_roadside_' => $wedformID[42],
@@ -159,14 +167,14 @@ class CustomModController extends ControllerBase
                     //kint($webform_submission);
                     if (is_numeric($webform_submission->id()) && $webform_submission->id() > 0) {
                         $responseWF = true;
-                        $response['response'] = 'success';
+                        $response = '<tr><td>'.$wedformID[1].'</td><td>success</td></tr>';
                     }
                 }
             }
         }
 
         if (false === $responseWF) {
-            $response['response'] = 'Submission failed. Please contact the site administrator.';
+            $response = '<tr style="color:red;"><td>'.$wedformID[1].'</td><td>FAILED</td></tr>';
         }
         unset($wedformID);
 
