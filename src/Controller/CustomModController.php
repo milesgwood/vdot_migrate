@@ -53,14 +53,19 @@ class CustomModController extends ControllerBase
             echo 'No UID for '.$name;
         }
 
+        $agencies = explode('-', $wedformID[38]);
+        $amounts = explode('-', $wedformID[39]);
         $other_agencies = array();
-        $other_agencies_data = array(
-            'agency' => $wedformID[38],
-            'amount' => $wedformID[39],
-        );
-        $other_agencies[] = $other_agencies_data;
 
-        $law_enforcement_percentage = $this->convert_num_to_percent_range_law_enforcement($wedformID[64]); //64 is empty in 2004 - 24 is supposed to be the percentage
+        for ($x = 0; $x < sizeof($amounts); ++$x) {
+            $other_agencies_data = array(
+                'agency' => $agencies[$x],
+                'amount' => $amounts[$x],
+            );
+            $other_agencies[] = $other_agencies_data;
+        }
+
+        $law_enforcement_percentage = $this->convert_num_to_percent_range_law_enforcement($wedformID[24]); //64 is empty in 2004 - 24 is supposed to be the percentage
         $percent_personal_prop_tax_from_vehicles = $this->convert_num_to_percent_range($wedformID[9]);
         $email = preg_replace('/\s+/', '', $wedformID[3]);
 
@@ -137,7 +142,7 @@ class CustomModController extends ControllerBase
                 'suffix' => '',
                 'taxi_permits' => $wedformID[63],
                 // 'how_much_did_your_locality_spend_on_law_enforcement_in_2017_' => $wedformID[64], //64 is blank - total is actually in 24
-                'how_much_did_your_locality_spend_on_law_enforcement_in_2017_' => $wedformID[24],
+                'how_much_did_your_locality_spend_on_law_enforcement_in_2017_' => $wedformID[64],
                 'traffic_control_devices_eligible' => $wedformID[65],
                 'traffic_control_devices' => $wedformID[66],
                 'title' => 'Mr.',
@@ -207,23 +212,23 @@ class CustomModController extends ControllerBase
 
     public function convert_num_to_percent_range_law_enforcement($index)
     {
-        if (1 == $index) {
+        if ('Less than 20%' == $index) {
             return 'Less than 20%';
-        } elseif (2 == $index) {
+        } elseif ('20 to 29.9%' == $index) {
             return '20 to 29.9%';
-        } elseif (3 == $index) {
+        } elseif ('30 to 39.9%' == $index) {
             return '30 to 39.9%';
-        } elseif (4 == $index) {
+        } elseif ('40 to 49.9%' == $index) {
             return '40 to 49.9%';
-        } elseif (5 == $index) {
+        } elseif ('50 to 59.9%' == $index) {
             return '50 to 59.9%';
-        } elseif (6 == $index) {
+        } elseif ('60 to 69.9%' == $index) {
             return '60 to 69.9%';
-        } elseif (7 == $index) {
+        } elseif ('70 to 79.9%' == $index) {
             return '70 to 79.9%';
-        } elseif (8 == $index) {
+        } elseif ('80 to 89.9%' == $index) {
             return '80 to 89.9%';
-        } elseif (9 == $index) {
+        } elseif ('90 to 100%' == $index) {
             return '90 to 100%';
         } else {
             return 'unknown';
