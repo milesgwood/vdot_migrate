@@ -63,6 +63,7 @@ class CustomModController extends ControllerBase
         $law_enforcement_percentage = $this->convert_num_to_percent_range_law_enforcement($wedformID[64]); //64 is empty in 2004 - 24 is supposed to be the percentage
         $percent_personal_prop_tax_from_vehicles = $this->convert_num_to_percent_range($wedformID[9]);
         $email = preg_replace('/\s+/', '', $wedformID[3]);
+        $comment = substr($wedformID[10], 254);
 
         $values = [
             'webform_id' => '2018_vdot_survey',
@@ -81,7 +82,7 @@ class CustomModController extends ControllerBase
                 'of_the_total_outstanding_what_amount_was_associated_with_financi' => $wedformID[7],
                 'bicycle_licenses_or_permits' => $wedformID[8],
                 'check_the_approximate_percentage_of_personal_property_tax_receip' => $percent_personal_prop_tax_from_vehicles,
-                'comments' => $wedformID[10],
+                'comments' => $comment,
                 'first_name' => $wedformID[11],
                 'construction' => $wedformID[12],
                 'construction_total' => $wedformID[13],
@@ -178,6 +179,8 @@ class CustomModController extends ControllerBase
 
         if (false === $responseWF) {
             $response = '<tr><td></td><td style="color:red;">'.$wedformID[1].'</td><td style="color:red;">FAILED</td></tr>';
+            $message = $wedformID[1].' --- FAILED TO IMPORT'.implode(' ', $errors);
+            \Drupal::logger('vdot_migrate')->notice($message);
         }
         unset($wedformID);
 
